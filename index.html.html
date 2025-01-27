@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="An impressive and flawless site template that includes various UI elements and countless features, attractive ready-made blocks and rich pages, basically everything you need to create a unique and professional website.">
+  <meta name="keywords" content="bootstrap 5, business, corporate, creative, gulp, marketing, minimal, modern, multipurpose, one page, responsive, saas, sass, seo, startup, html5 template, site template">
+  <meta name="author" content="elemis">
+  <title>Author - 李皓然</title>
+  <link rel="shortcut icon" href="./assets/img/favicon.png">
+  <link rel="stylesheet" href="./assets/css/plugins.css">
+  <link rel="stylesheet" href="./assets/css/style.css">
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+
+<body>
+  <div class="content-wrapper" id="app">
+    <section class="wrapper bg-light">
+      <div class="container pt-10 pt-md-14">
+        <div class="row">
+          <div class="col-lg-10 col-xxl-8 bg-soft-ash" >
+            <h1 class="display-1 mb-3 text-navy">"欢迎来到我的主页！这里是一个展示我兴趣和创作的地方"</h1>
+            <h1 class="display-12 mb-3 text-leaf ">{{data.title}} - 尽在此处</h1>
+            <i class="uil uil-analytics"></i>
+            </div>
+          <!-- /column -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container -->
+    </section>
+    <!-- /section -->
+    <section class="wrapper bg-light">
+      <div class="container py-14 py-md-16">
+        <div class="grid grid-view projects-masonry">
+          <!-- 导航栏 -->
+          <div class="isotope-filter filter mb-10">
+            <p>Filter:</p>
+            <ul>
+              <li><a class="filter-item active" data-filter="*">All</a></li>
+              <li><a class="filter-item" :data-filter="'.'+data.Tags[0]">{{data.Tags[0]}}</a></li>
+              <li><a class="filter-item" :data-filter="'.'+data.Tags[1]">{{data.Tags[1]}}</a></li>
+              <li><a class="filter-item" :data-filter="'.'+data.Tags[2]">{{data.Tags[2]}}</a></li>
+              <li><a class="filter-item" :data-filter="'.'+data.Tags[3]">{{data.Tags[3]}}</a></li>
+            </ul>
+          </div>
+          <div class="row gx-md-10 gy-10 gy-md-13 isotope" v-show="1">
+              <div class="project item col-md-6" :class="i.Tag" v-show="1" v-for="(i,index) in data.type" :key="index">
+                <figure class="lift rounded mb-6"><a :href="i.toURL"> <img :src="i.imgsrc" alt="" /></a></figure>
+                <div class="project-details d-flex justify-content-center flex-column">
+                  <div class="post-header">
+                    <div class="post-category text-line mb-2" :class="i.text_color">{{i.产品名}}</div>
+                    <h3 class="post-title">{{i.特点}}</h3>
+                  </div>
+                  <!-- /.post-header -->
+                </div>
+                <!-- /.project-details -->
+              </div>
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.grid -->
+      </div>
+      <!-- /.container -->
+    </section>
+    <!-- /section -->
+  </div>
+  <script> 
+    // app1 -> 介绍下自己的网站做什么
+    const app = Vue.createApp({
+      setup(){
+        const data = Vue.reactive({
+          title:"<关于可爱之物的一切>",
+          //concept - product - workshop - still-life
+          //text-violet - text-leaf - text-purple
+          //图片尺寸 1300 * y <任意>
+          Tags:["美女","少女","宠物","战士"],
+          type:[
+            {
+              Tag:"美女",
+              imgsrc:"./gril/1.png",
+              toURL:"./single-project.html",
+              产品名:"幻想中的女友",
+              特点:"清纯 - 可爱 - 娇羞",
+              text_color:"text-violet"
+            },
+            {
+              Tag:"美女",
+              imgsrc:"./gril/2.png",
+              toURL:"./single-project.html",
+              产品名:"幻想中的女友",
+              特点:"诱人 - 欲望爆棚 - 色气",
+              text_color:"text-violet"
+            },
+            {
+              Tag:"少女",
+              imgsrc:"./gril/3.png",
+              toURL:"./single-project.html",
+              产品名:"幻想中的妹妹",
+              特点:"阳光 - 开朗 - 可爱",
+              text_color:"text-leaf"
+            },
+            {
+              Tag:"少女",
+              imgsrc:"./gril/4.png",
+              toURL:"./single-project.html",
+              产品名:"幻想中的妹妹",
+              特点:"娇滴滴",
+              text_color:"text-leaf"
+            },
+            {
+              Tag:"宠物",
+              imgsrc:"./gril/5.png",
+              toURL:"./single-project.html",
+              产品名:"幻想中的小宠物 - 蛙蛙",
+              特点:"啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊",
+              text_color:"text-violet"
+            },
+            {
+              Tag:"宠物",
+              imgsrc:"./gril/6.png",
+              toURL:"./single-project.html",
+              产品名:"幻想中的小宠物 - 皮卡丘",
+              特点:"皮卡丘~~~~~~~~~~~~",
+              text_color:"text-violet"
+            },
+            {
+              Tag:"战士",
+              imgsrc:"./gril/7.png",
+              toURL:"./single-project.html",
+              产品名:"龙珠 - 孙悟空",
+              特点:"梦想是不断变强，为追求力量而刻苦修行。",
+              text_color:".text-red"
+            },
+            {
+              Tag:"战士",
+              imgsrc:"./gril/8.png",
+              toURL:"./single-project.html",
+              产品名:"血色之刃",
+              特点:"当附近的可见敌方英雄数量在1或以下时，获得8穿甲和20%-80%攻击速度（基于等级）",
+              text_color:".text-red"
+            }
+          ],
+        })
+        return {data}
+      }
+    })
+    const vm = app.mount('#app');
+  </script>
+  <script src="./assets/js/plugins.js"></script>
+  <script src="./assets/js/theme.js"></script>
+</body>
+
+</html>

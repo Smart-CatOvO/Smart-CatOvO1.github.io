@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="shortcut icon" type="image/png" href="/icon.png" />
+
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <title>Table - Application</title>
+</head>
+
+<body>
+  <!-- TOP NAVIGATION -->
+  <div id = "app1">
+    <div class="hover" v-if="isshow">
+      待开发清单：DataBase-> Sort() -> 更实用的记录算法 <br>
+      <HR></HR>
+      <button @click="f4">Save()</button><br>
+      <input type="file" id="csvFile" accept=".csv" />
+      <button onclick="handleFile()">Load()</button>
+      <img src="./image.png" alt="" style="width: 300px; height: auto;" >
+      <hr>
+    </div>
+    <main class="app">
+      <!-- BALANCE -->
+      <div class="balance">
+        <div>
+          <p class="balance__label">{{title}} <button @click="isshow = !isshow">🤭</button></p>
+          <p class="balance__date">
+            As of <span class="date">{{Now}}</span>
+          </p>
+          <p class="balance__date">
+            Author : <span class="date">{{Author}}</span>
+          </p>
+        </div>
+        <p class="balance__value">{{total}}$</p>
+      </div>
+  
+      <!-- MOVEMENTS -->
+       <!-- movements__type--withdrawal - movements__type--deposit -->
+      <div class="movements">
+        <div class="movements__row" v-for="(i,index) in d.movementsDates" :key = index>
+          <div class="movements__row">{{i.id}}</div>
+          <div class="movements__type" :class="{'movements__type--withdrawal':i.value < 0,'movements__type--deposit':i.value >= 0}">{{i.dec}}</div>
+          <div class="movements__date">{{i.day}}</div>
+          <div class="movements__value">{{i.value}}$</div>
+        </div>
+      </div>
+  
+      <!-- SUMMARY -->
+      <div class="summary">
+        <p class="summary__label">In</p>
+        <p class="summary__value summary__value--in">{{total_add}}$</p>
+        <p class="summary__label">Out</p>
+        <p class="summary__value summary__value--out">{{total_de}}$</p>
+        <!-- 利率 -->
+        <div v-show="0">
+          <p class="summary__label">Interest</p>
+          <p class="summary__value summary__value--interest">{{}}$</p>
+        </div>
+  
+      </div>
+  
+      <!-- OPERATION: TRANSFERS -->
+      <div class="operation operation--transfer">
+        <h2>添加正增量</h2>
+        <form class="form form--transfer">
+          <input type="text" class="form__input form__input--to" v-model="model_add.t1"/>
+          <input type="text" class="form__input form__input--to" v-model="model_add.t2"/>
+          <input type="number" class="form__input form__input--amount " min='0' v-model="model_add.t3" />
+          <label class="form__label">编号</label>
+          <label class="form__label">描述</label>
+          <label class="form__label">向量</label><br>
+          <button type="button" class="form__btn form__btn--transfer" @click="f1">&rarr;</button>
+        </form>
+      </div>
+  
+      <!-- OPERATION: LOAN -->
+      <div class="operation operation--loan">
+        <h2>添加负增量</h2>
+        <form class="form form--transfer">
+          <input type="text" class="form__input form__input--to" v-model="model_de.t1"/>
+          <input type="text" class="form__input form__input--to" v-model="model_de.t2"/>
+          <input type="number" class="form__input form__input--amount" v-model="model_de.t3"/>
+          <label class="form__label">编号</label>
+          <label class="form__label">描述</label>
+          <label class="form__label">向量</label><br>
+          <button type="button" class="form__btn form__btn--transfer" @click="f2">&rarr;</button>
+        </form>
+      </div>
+  
+      <!-- OPERATION: CLOSE -->
+      <div class="operation operation--close">
+        <h2>修改指定增量</h2>
+        <form class="form form--close">
+          <input type="text" class="form__input form__input--to" v-model="model_up.t1"/>
+          <input type="number" maxlength="6" class="form__input form__input--pin" v-model="model_up.t2" />
+          <button type="button" class="form__btn form__btn--close" @click="f3">&rarr;</button>
+          <label class="form__label">对象ID</label>
+          <label class="form__label">修改值</label>
+        </form>
+      </div>
+  
+    </main>
+  </div>
+
+
+  <script src="script.js"></script>
+  <!-- 关于时间的函数 -->
+  <script>
+    const now = new Date();
+  </script>
+  <script>
+    const account1 = {
+      owner: 'Li Hao Ran',
+      movementsDates: [
+        // {id:"A-01",dec:"增",day:'2019-11-18T21:31:17.178Z',value:200},
+        // {id:"A-01",dec:"增",day:'2019-11-18T21:31:17.178Z',value:200}
+      ],
+      currency: 'CHINA',
+      locale: 'zh_CN', // de-DE
+    };
+    const app = Vue.createApp({
+      setup(){
+        const isshow = Vue.ref(false);
+        const d = Vue.reactive(account1)
+        const title = Vue.ref(`关于维多利亚3的数据收集`)
+        const Author = Vue.ref(`Author:${account1.owner}`)
+        const Now = Vue.ref(now.toDateString())
+        const total = Vue.computed(()=>{
+          let t = 0
+          for(let i of d.movementsDates){
+            t+=i.value
+          }
+          return t
+        })
+        const total_add = Vue.computed(()=>{
+          let t = 0
+          for(let i of d.movementsDates){
+            if(i.value >0)t+=i.value
+          }
+          return t
+        })
+        const total_de = Vue.computed(()=>{
+          let t = 0
+          for(let i of d.movementsDates){
+            if(i.value <0)t+=i.value
+          }
+          return t
+        })
+        const model_add = Vue.reactive({t1:null,t2:null,t3:null})
+        const model_de = Vue.reactive({t1:null,t2:null,t3:null})
+        const model_up = Vue.reactive({t1:null,t2:null})
+        //添加+
+        const f1 = function(){
+          //{id:"A-01",dec:"增",day:'2019-11-18T21:31:17.178Z',value:200}
+          let o = {id:model_add.t1,dec:model_add.t2,day:new Date().toDateString(),value:model_add.t3<0?-1*model_add.t3:model_add.t3}
+          d.movementsDates.push(o)
+          model_add.t1 = null
+          model_add.t2 = null
+          model_add.t3 = null
+        } 
+        //添加-
+        const f2 = function(){
+          let o = {id:model_de.t1,dec:model_de.t2,day:new Date().toDateString(),value:model_de.t3>0?-1*model_de.t3:model_de.t3}
+          d.movementsDates.push(o)
+          model_de.t1 = null
+          model_de.t2 = null
+          model_de.t3 = null
+        }
+        //修改
+        const f3 = function(){
+          let o = {id:model_up.t1,value:model_up.t2}
+          for(let i = 0;i<d.movementsDates.length;i++){
+            if(d.movementsDates[i].id === o.id){
+              alert(`修改成功:${d.movementsDates[i].value}->${o.value}`)
+              d.movementsDates[i].value = o.value
+              model_up.t1 = null
+              model_up.t2 = null
+              return
+            }
+          }
+          alert("未查找到该编号.....")
+          model_up.t1 = null
+          model_up.t2 = null
+        }
+        //保存为CSV文件
+        const f4 = function(){
+          const headers = ["Owner", "Currency", "Locale", "ID", "Description", "Value","Date" ];
+          const rows = d.movementsDates.map(movement => {
+            return [
+              d.owner,
+              d.currency,
+              d.locale,
+              movement.id,
+              movement.dec,
+              movement.value,
+              movement.day,
+            ];
+          });
+          const csvContent = [
+            headers.join(","),
+            ...rows.map(row => row.join(","))
+          ].join("\n");
+          //console.log(csvContent)
+          // Owner,Currency,Locale,ID,Description,Date,Value
+          // Li Hao Ran,CHINA,zh_CN,A-01,增,2019-11-18T21:31:17.178Z,200
+          // Li Hao Ran,CHINA,zh_CN,A-01,增,2019-11-18T21:31:17.178Z,200
+          const blob = new Blob([csvContent], { type: 'text/csv' });
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = `${Author.value}_${Now.value}.csv`;
+          link.click();
+        }
+        return {isshow,d,Author,Now,title,total,total_add,total_de,f1,f2,f3,f4,model_add,model_de,model_up}
+      }
+    })
+    const vm = app.mount('#app1');
+  </script>
+  <script>
+    // 处理CSV文件的函数
+function handleFile() {
+    const fileInput = document.getElementById('csvFile');
+    const file = fileInput.files[0];
+  
+    if (!file) {
+      alert('请先选择一个文件');
+      return;
+    }
+  
+    const reader = new FileReader();
+    
+    reader.onload = function(event) {
+      const csvContent = event.target.result;
+      const parsedData = parseCSV(csvContent);
+      console.log(parsedData); // 打印解析后的数据
+      const m = parsedData.map(item =>({
+        day: item.Date,      // 将 Date 映射为 day
+        dec: item.Description,  // 将 Description 映射为 dec
+        id: item.ID,          // 将 ID 映射为 id
+        value: Number(item.Value)     // 将 Value 映射为 value
+      }))
+      vm.d.movementsDates = m
+    };
+    
+  
+    reader.readAsText(file);  // 读取文件内容为文本
+  }
+  
+  // CSV 解析函数：简单解析 CSV 格式
+  function parseCSV(csvContent) {
+    const rows = csvContent.split('\n');  // 按行分割
+    const headers = rows[0].split(',');   // 获取表头（第一行）
+    
+    // 解析每一行数据，排除表头
+    const data = rows.slice(1).map(row => {
+      const values = row.split(',');  // 按逗号分割
+      let rowObject = {};
+      headers.forEach((header, index) => {
+        rowObject[header] = values[index];  // 创建键值对
+      });
+      return rowObject;  // 返回对象
+    });
+  
+    return data;  // 返回解析后的数据数组
+  }
+  </script>
+</body>
+
+</html>
